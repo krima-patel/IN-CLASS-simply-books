@@ -17,7 +17,16 @@ const getAuthors = (uid) => new Promise((resolve, reject) => {
 });
 
 // FIXME: CREATE AUTHOR
-const createAuthor = () => {};
+const createAuthor = (newAuthorObj) => new Promise((resolve, reject) => {
+  axios.post(`${dbUrl}/authors.json`, newAuthorObj)
+    .then((response) => {
+      const body = { firebaseKey: response.data.name };
+      axios.patch(`${dbUrl}/authors/${response.data.name}.json`, body)
+        .then(() => {
+          getAuthors(newAuthorObj.uid).then(resolve);
+        });
+    }).catch(reject);
+});
 
 const getSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
   axios.get(`${dbUrl}/authors/${firebaseKey}.json`)
@@ -26,13 +35,35 @@ const getSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
 });
 
 // FIXME: DELETE AUTHOR
-const deleteSingleAuthor = () => {};
+const deleteSingleAuthor = (firebaseKey) => new Promise((resolve, reject) => {
+  axios.delete(`${dbUrl}/authors/${firebaseKey}.json`)
+    .then(() => {
+      getAuthors().then((authorsArray) => resolve(authorsArray)).catch((error) => reject(error));
+    });
+});
 
 // FIXME: UPDATE AUTHOR
-const updateAuthor = () => {};
+const updateAuthor = (authorObj) => new Promise((resolve, reject) => {
+  axios.patch(`${dbUrl}/authors/${authorObj.firebaseKey}.json`, authorObj)
+    .then(() => getAuthors(authorObj.uid).then(resolve))
+    .catch(reject);
+});
 
 // TODO: GET A SINGLE AUTHOR'S BOOKS
-const getAuthorBooks = () => {};
+const getAuthorBooks = (firebaseKey) => new Promise((resolve, reject) => {
+  axios.get(`${dbUrl}/books.json?orderBy="author_id"&equalTo="${firebaseKey}"`)
+    .then((response) => resolve(Object.values(response.data)))
+    .catch((error) => reject(error));
+});
+
+const favoriteAuthors = (uid) => new Promise((resolve, reject) => {
+  getAuthors(uid)
+    .then((authorsByUser) => {
+      const favoriteAuth = authorsByUser.filter((author) => author.favorite);
+      resolve(favoriteAuth);
+    })
+    .catch(reject);
+});
 
 export {
   getAuthors,
@@ -41,4 +72,5 @@ export {
   deleteSingleAuthor,
   updateAuthor,
   getAuthorBooks,
+  favoriteAuthors,
 };

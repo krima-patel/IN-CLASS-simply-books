@@ -10,7 +10,7 @@ function Home() {
   // TODO: Set a state for books
   const [books, setBooks] = useState([]);
 
-  // TODO: Get user ID using useAuth Hook
+  // TODO: Get user ID using useAuth Hook for use in getting user specific books
   const { user } = useAuth();
 
   // TODO: create a function that makes the API call to get all the books
@@ -21,7 +21,9 @@ function Home() {
   // TODO: make the call to the API to get all the books on component render
   useEffect(() => {
     getAllTheBooks();
-  }, []);
+  }, [user]);
+
+  // TODO: FOR DELETE REFACTOR: craete a function that makes the API call to get all the books
 
   return (
     <div className="text-center my-4">
