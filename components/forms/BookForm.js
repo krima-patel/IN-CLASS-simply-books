@@ -8,6 +8,7 @@ import { useAuth } from '../../utils/context/authContext';
 import { getAuthors } from '../../api/authorData';
 import { createBook, updateBook } from '../../api/bookData';
 
+// used for default values in form.
 const initialState = {
   description: '',
   image: '',
