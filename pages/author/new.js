@@ -1,7 +1,8 @@
 import React from 'react';
+import AuthorForm from '../../components/forms/AuthorForm';
 
-export default function New() {
+export default function AddAuthor() {
   return (
-    <div>new</div>
+    <AuthorForm />
   );
 }
